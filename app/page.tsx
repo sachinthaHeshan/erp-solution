@@ -1,6 +1,23 @@
+"use client";
+
+import { trpc } from "@/utils/trpc";
+import { Prisma, User } from "@prisma/client";
 import Image from "next/image";
 
 export default function Home() {
+  // await prisma.user.create({
+  //   data: {
+  //     name: "Kasun",
+  //   },
+  // });
+
+  // const users = await prisma.user.findMany();
+
+  // const utils = trpc.useContext();
+  const users = trpc.post.list.useQuery();
+
+  console.log(users);
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
@@ -258,6 +275,22 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {users?.data?.items?.map((user) => {
+        return (
+          <div key={user?.id} className="text-white ">
+            {user?.name}
+          </div>
+        );
+      })}
+
+      {/* <button
+        onClick={() => {
+          createuser();
+        }}
+      >
+        Add
+      </button> */}
     </div>
   );
 }
