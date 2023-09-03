@@ -7,7 +7,7 @@ import { NextPageContext } from "next";
 // ℹ️ Type-only import:
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 import type { AppRouter } from "../server/routers/_app";
-// import { transformer } from './transformer';
+import { transformer } from "./transformer";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") {
@@ -56,7 +56,7 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
       /**
        * @link https://trpc.io/docs/data-transformers
        */
-      //   transformer,
+      transformer,
       /**
        * @link https://trpc.io/docs/client/links
        */

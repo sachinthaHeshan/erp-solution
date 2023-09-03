@@ -1,22 +1,22 @@
 "use client";
 import { SideBar } from "@/modules/layout/SideBar";
 import "./globals.css";
-// import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { trpc } from "@/utils/trpc";
-
-const inter = Inter({ subsets: ["latin"] });
-
-// export const metadata: Metadata = {
-//   title: "Collective OS",
-//   description: "Collective OS",
-// };
+import { Footer } from "@/modules/layout/Footer";
+import { Header } from "@/modules/layout/Header";
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <SideBar>{children}</SideBar>
+      <body>
+        <SideBar />
+        <div className="ml-64 min-h-screen flex flex-col justify-between">
+          <div>
+            <Header />
+            {children}
+          </div>
+          <Footer />
+        </div>
       </body>
     </html>
   );

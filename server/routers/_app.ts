@@ -7,7 +7,7 @@ import { postRouter } from "./user";
 export const appRouter = router({
   healthcheck: publicProcedure.query(() => "yay!"),
 
-  post: postRouter,
+  user: postRouter,
 });
 
 export type AppRouter = typeof appRouter;
