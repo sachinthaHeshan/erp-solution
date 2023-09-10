@@ -1,11 +1,11 @@
 "use client";
 
-import { ListTable } from "@/modules/shared/components/ListTable";
+import { CompanyTable } from "@/modules/company/components/CompanyTable";
 
 export default function Companies() {
   return (
     <div className="p-10">
-      <ListTable />
+      <CompanyTable />
     </div>
   );
 }

@@ -14,3 +14,14 @@ model User {
   id   Int    @id @default(autoincrement())
   name String
 }
+
+model Company {
+  id      String @id @default(uuid())
+  name    String
+  website String
+}
+
+model Industry {
+  id   String @id @default(uuid())
+  name String @unique
+}

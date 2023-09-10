@@ -1,4 +1,4 @@
-import { InputField } from "../shared/components/FormFields/InputField";
+import { SearchField } from "../shared/components/FormFields/SearchField";
 import Image from "next/image";
 
 export const Header = () => {
@@ -7,7 +7,7 @@ export const Header = () => {
       <h1 className="text-xl font-medium">Company Management</h1>
 
       <div className="flex items-center gap-4">
-        <InputField />
+        <SearchField variant="dark" />
         <div className="border-l-2 border-red-1000 h-12 ml-2" />
 
         <div className="relative">

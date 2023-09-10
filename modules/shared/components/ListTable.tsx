@@ -1,6 +1,15 @@
 import { ReactNode } from "react";
 
-export const ListTable = () => {
+interface DataSourceType {
+  key: string | number;
+  [key: string]: ReactNode;
+}
+
+interface ListTableProps {
+  dataSource: DataSourceType[];
+}
+
+export const ListTable = ({ dataSource }: ListTableProps) => {
   const columns = [
     {
       key: "company",
@@ -13,21 +22,6 @@ export const ListTable = () => {
     {
       key: "relationship",
       Name: "RELATIONSHIP",
-    },
-  ];
-
-  const dataSource: { key: string | number; [key: string]: ReactNode }[] = [
-    {
-      key: "sdsdcdscsdc",
-      company: "Apple MacBook Pro 17",
-      accountLead: "Joeseph Smith",
-      relationship: "Company",
-    },
-    {
-      key: "fnvknfdvdffv",
-      company: "Apple MacBook Pro 17",
-      accountLead: "Joeseph Smith",
-      relationship: "Company",
     },
   ];
 

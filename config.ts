@@ -25,3 +25,9 @@ export const sideMenuTabs = [
     icon: "/icons/company.svg",
   },
 ];
+
+export const headerBarTiles = new Map([
+  ["/dashboard", "s"],
+  ["/people", "300"],
+  ["documents", "200"],
+]);
