@@ -14,13 +14,24 @@ export type OptionType = {
 interface SelectProps {
   options: OptionType[];
   placeholder?: string;
+  className?: string;
+  label?: string;
 }
 
-export const Select = ({ options, placeholder }: SelectProps) => {
+export const Select = ({
+  options,
+  placeholder,
+  className,
+  label,
+}: SelectProps) => {
   const [selected, setSelected] = useState<OptionType | null>(options?.[0]);
 
   return (
-    <div className="w-full">
+    <div className={`w-full ${className}`}>
+      {label ? (
+        <label className="block mb-2 text-sm font-medium ">{label}</label>
+      ) : null}
+
       <Listbox value={selected} onChange={setSelected}>
         <div className="group relative">
           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white border border-gray-200  h-12 pl-3 pr-8 text-left  focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">

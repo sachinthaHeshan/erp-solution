@@ -15,9 +15,10 @@ export const TextInput = ({
   errors,
   label,
 }: TextInputProps) => {
-  const error: string | undefined =
+  const error =
     errors && name.split(".").reduce((acc: any, key) => acc?.[key], errors);
 
+  console.log(error);
   return (
     <div className={className}>
       {label ? (
@@ -28,11 +29,13 @@ export const TextInput = ({
         {...register(name)}
         type="text"
         id="error"
-        className="border text-sm rounded-lg block w-full p-2.5 "
+        className="border text-sm rounded-lg block w-full h-12 px-3 "
         placeholder="Error input"
       />
       {error ? (
-        <p className="mt-2 text-sm text-red-600 dark:text-red-500"></p>
+        <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+          {error.message}
+        </p>
       ) : (
         ""
       )}

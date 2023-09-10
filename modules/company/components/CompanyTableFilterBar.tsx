@@ -2,16 +2,15 @@ import { Button } from "@/modules/shared/components/Button";
 import { Drawer } from "@/modules/shared/components/Drawer/Drawer";
 import { SearchField } from "@/modules/shared/components/FormFields/SearchField";
 import { Select } from "@/modules/shared/components/FormFields/Select";
-import { useState } from "react";
-import { CreateCompanyForm } from "./CreateCompanyForm";
+import { MutableRefObject, useRef, useState } from "react";
+import { SubmitHandle, CreateCompanyForm } from "./CreateCompanyForm";
 import { DrawerFooter } from "@/modules/shared/components/Drawer/DrawerFooter";
-import { trpc } from "@/utils/trpc";
 
 export const CompanyTableFilterBar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
 
-  const createCompany = trpc.company.create.useMutation();
+  const formComponet = useRef<SubmitHandle>();
 
   return (
     <div className="flex justify-between pb-4">
@@ -35,6 +34,7 @@ export const CompanyTableFilterBar = () => {
           ]}
         />
       </div>
+
       <Button
         onClick={() => {
           setIsDrawerOpen(true);
@@ -54,19 +54,20 @@ export const CompanyTableFilterBar = () => {
           <DrawerFooter>
             <Button
               onClick={async () => {
-                await createCompany.mutateAsync({
-                  name: "Google",
-                  website: "https://www.google.com/",
-                });
+                setIsSubmiting(true);
+                await formComponet?.current?.submit();
+                setIsSubmiting(false);
               }}
             >
-              {isLoading ? "Loading..." : "SAVE"}
+              {isSubmiting ? "Loading..." : "SAVE"}
             </Button>
           </DrawerFooter>
         }
         persist
       >
-        <CreateCompanyForm />
+        <CreateCompanyForm
+          ref={formComponet as MutableRefObject<SubmitHandle>}
+        />
       </Drawer>
     </div>
   );
