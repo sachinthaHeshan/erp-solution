@@ -11,7 +11,11 @@ export const CompanyTable = () => {
 
   return (
     <div>
-      <CompanyTableFilterBar />
+      <CompanyTableFilterBar
+        onSuccess={() => {
+          companies.refetch();
+        }}
+      />
       <ListTable
         dataSource={
           companies.isSuccess

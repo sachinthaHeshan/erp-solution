@@ -1,30 +1,73 @@
 const { PrismaClient } = require("@prisma/client");
+const util = require("util");
+const parseArgs = util.parseArgs;
+
 const prisma = new PrismaClient();
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+
+const industries: string[] = ["Accounting", "Animations", "Banking"];
+
+const numOfEmps = [
+  { slug: "5<", name: "5 <" },
+  { slug: "6-10", name: "6 - 10" },
+  { slug: "11-50", name: "11 - 50" },
+  { slug: "51-200", name: "51 - 200" },
+  { slug: "201-500", name: "201 - 500" },
+  { slug: ">500", name: "> 500" },
+];
 
 async function main() {
-  // "Do not update existing values. You can only add and remove. If you try to update, it will create a new record and delete the existing one."
-  const industries: string[] = ["Accounting", "Animations", "Banking"];
+  const {
+    values: { only },
+  } = parseArgs({
+    options: {
+      only: { type: "string" },
+    },
+  });
 
-  try {
-    await prisma.industry.deleteMany({
-      where: { name: { notIn: industries } },
-    });
+  switch (only) {
+    case "seedIndustries":
+      try {
+        await prisma.industry.deleteMany({
+          where: { name: { notIn: industries } },
+        });
 
-    for (const industry of industries) {
-      await prisma.industry.upsert({
-        where: { name: industry },
-        create: { name: industry },
-        update: { name: industry },
-      });
-    }
-    console.log("Seed data for industries has been upserted successfully.");
-  } catch (error) {
-    console.error("Error upserting industries:", error);
-  } finally {
-    await prisma.$disconnect();
+        for (const industry of industries) {
+          await prisma.industry.upsert({
+            where: { name: industry },
+            create: { name: industry },
+            update: { name: industry },
+          });
+        }
+        console.log("Seed data for industries has been upserted successfully.");
+      } catch (error) {
+        console.error("Error upserting industries:", error);
+      } finally {
+        await prisma.$disconnect();
+      }
+      break;
+    case "seedNumOfEmps":
+      try {
+        // await prisma.numOfEmps.deleteMany({
+        //   where: { name: { notIn: industries } },
+        // });
+
+        for (const numOfEmp of numOfEmps) {
+          await prisma.numOfEmp.upsert({
+            where: { slug: numOfEmp.slug },
+            create: numOfEmp,
+            update: numOfEmp,
+          });
+        }
+        console.log("Seed data for industries has been upserted successfully.");
+      } catch (error) {
+        console.error("Error upserting industries:", error);
+      } finally {
+        await prisma.$disconnect();
+      }
+
+      break;
+    default:
+      break;
   }
 }
 

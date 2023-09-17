@@ -1,5 +1,4 @@
 import { router, publicProcedure } from "../trpc";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../prisma";
 
@@ -27,14 +26,18 @@ export const companyRouter = router({
       z.object({
         name: z.string(),
         website: z.string(),
+        industryId: z.string().nullable(),
+        numOfEmpslug: z.string().nullable(),
       })
     )
     .mutation(async ({ input }) => {
-      const { name, website } = input;
+      const { name, website, industryId, numOfEmpslug } = input;
       const newCompany = await prisma.company.create({
         data: {
           name,
           website,
+          industryId,
+          numOfEmpslug,
         },
       });
 
@@ -42,4 +45,12 @@ export const companyRouter = router({
         newCompany,
       };
     }),
+  detailsForCreateForm: publicProcedure.query(async () => {
+    const industries = await prisma.industry.findMany();
+    const numOfEmps = await prisma.numOfEmp.findMany();
+    return {
+      numOfEmps,
+      industries,
+    };
+  }),
 });

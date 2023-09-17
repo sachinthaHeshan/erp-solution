@@ -8,7 +8,7 @@ export const Header = () => {
 
       <div className="flex items-center gap-4">
         <SearchField variant="dark" />
-        <div className="border-l-2 border-red-1000 h-12 ml-2" />
+        <div className="border-l border-red-1000 h-12 ml-2" />
 
         <div className="relative">
           <Image

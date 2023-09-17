@@ -6,6 +6,7 @@ interface TextInputProps {
   className?: string;
   errors?: FieldErrors<any>;
   label?: string;
+  required?: boolean;
 }
 
 export const TextInput = ({
@@ -14,6 +15,7 @@ export const TextInput = ({
   register,
   errors,
   label,
+  required,
 }: TextInputProps) => {
   const error =
     errors && name.split(".").reduce((acc: any, key) => acc?.[key], errors);
@@ -22,7 +24,10 @@ export const TextInput = ({
   return (
     <div className={className}>
       {label ? (
-        <label className="block mb-2 text-sm font-medium ">{label}</label>
+        <label className="block mb-2 text-sm font-medium ">
+          {label}
+          {required && <span className="text-red-500">*</span>}
+        </label>
       ) : null}
 
       <input
