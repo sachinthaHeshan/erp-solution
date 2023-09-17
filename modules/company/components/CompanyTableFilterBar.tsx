@@ -1,12 +1,17 @@
 import { Button } from "@/modules/shared/components/Button";
 import { Drawer } from "@/modules/shared/components/Drawer/Drawer";
 import { SearchField } from "@/modules/shared/components/FormFields/SearchField";
-import { Select } from "@/modules/shared/components/FormFields/Select";
 import { MutableRefObject, useRef, useState } from "react";
 import { SubmitHandle, CreateCompanyForm } from "./CreateCompanyForm";
 import { DrawerFooter } from "@/modules/shared/components/Drawer/DrawerFooter";
 
-export const CompanyTableFilterBar = () => {
+interface CompanyTableFilterBarProps {
+  onSuccess: () => void;
+}
+
+export const CompanyTableFilterBar = ({
+  onSuccess,
+}: CompanyTableFilterBarProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
 
@@ -16,7 +21,8 @@ export const CompanyTableFilterBar = () => {
     <div className="flex justify-between pb-4">
       <div className="flex gap-4">
         <SearchField variant="light" />
-        <Select
+        {/* <Select
+          name="ss"
           placeholder="Relationship"
           options={[
             {
@@ -32,7 +38,7 @@ export const CompanyTableFilterBar = () => {
               value: "davids",
             },
           ]}
-        />
+        /> */}
       </div>
 
       <Button
@@ -47,6 +53,7 @@ export const CompanyTableFilterBar = () => {
         isOpen={isDrawerOpen}
         placement="right"
         title="Add New Company"
+        persist
         onClose={() => {
           setIsDrawerOpen(false);
         }}
@@ -63,10 +70,10 @@ export const CompanyTableFilterBar = () => {
             </Button>
           </DrawerFooter>
         }
-        persist
       >
         <CreateCompanyForm
           ref={formComponet as MutableRefObject<SubmitHandle>}
+          onSuccess={onSuccess}
         />
       </Drawer>
     </div>

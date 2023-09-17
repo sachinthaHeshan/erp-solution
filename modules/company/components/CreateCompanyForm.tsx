@@ -1,13 +1,17 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { getFormFields } from "@/modules/shared/functions/getFormFields";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { trpc } from "@/utils/trpc";
+import useSWRImmutable from "swr/immutable";
+import { useFormFields } from "@/modules/shared/hooks/useFormFields";
+import { Button } from "@/modules/shared/components/Button";
 
 const formSchema = z.object({
   name: z.string().min(1, "Username is required").max(100),
   website: z.string().min(1, "Website is required").max(100),
+  numOfEmps: z.string().nullable(),
+  industry: z.string().nullable(),
 });
 
 type ValidationSchema = z.infer<typeof formSchema>;
@@ -17,66 +21,166 @@ export type SubmitHandle = {
 };
 
 interface CreateCompanyFormProps {
-  s?: string;
+  onSuccess?: () => void;
 }
 
 export const CreateCompanyForm = forwardRef<
   SubmitHandle,
   CreateCompanyFormProps
->((props, ref) => {
+>(({ onSuccess }, ref) => {
   const createCompany = trpc.company.create.useMutation();
+  const utils = trpc.useContext();
+
+  const { data, isLoading } = useSWRImmutable(
+    "company.detailsForCreateForm.fetch",
+    utils.company.detailsForCreateForm.fetch
+  );
 
   const {
     register,
     handleSubmit,
+    // reset,
+    control,
+    watch,
+    trigger,
     formState: { errors },
   } = useForm<ValidationSchema>({
     resolver: zodResolver(formSchema as any),
+    defaultValues: {
+      numOfEmps: "",
+      industry: "",
+    },
   });
+  const { formFields, next, back, isLastStep } = useFormFields({
+    errors,
+    register,
+    control,
+    trigger,
+    steps: [
+      [
+        {
+          key: "company-details",
+          title: "Company Details",
+          fields: [
+            {
+              label: "Company Name",
+              name: "name",
+              type: "text",
+              colSpan: "half",
+              required: true,
+            },
+            {
+              label: "Website",
+              name: "website",
+              type: "text",
+              colSpan: "half",
+              required: true,
+            },
+            {
+              label: "Number of Employees",
+              name: "numOfEmps",
+              type: "select",
+              colSpan: "half",
+              options: data?.numOfEmps.map((option) => ({
+                label: option.name,
+                value: option.slug,
+              })),
+            },
+            {
+              label: "Industry",
+              name: "industry",
+              type: "select",
+              colSpan: "half",
+              options: data?.industries.map((option) => ({
+                label: option.name,
+                value: option.id,
+              })),
+            },
+          ],
+        },
+      ],
+      [
+        {
+          key: "contact-details",
+          title: "Contact Details",
+          fields: [
+            {
+              label: "Company Name",
+              name: "name2",
+              type: "text",
+              colSpan: "half",
+              required: true,
+            },
+            {
+              label: "Website",
+              name: "website2",
+              type: "text",
+              colSpan: "half",
+              required: true,
+            },
+
+            {
+              label: "Industry",
+              name: "industry2",
+              type: "select",
+              colSpan: "half",
+              options: data?.industries.map((option) => ({
+                label: option.name,
+                value: option.id,
+              })),
+            },
+          ],
+        },
+      ],
+    ],
+  });
+  useEffect(() => {
+    console.log("Effect", data);
+    // reset({
+    //   name:
+    // })
+  }, [isLoading]);
 
   const onSubmit: SubmitHandler<ValidationSchema> = async (data) => {
-    await createCompany.mutateAsync({
-      name: data.name,
-      website: data.website,
-    });
+    try {
+      await createCompany.mutateAsync({
+        name: data.name,
+        website: data.website,
+        industryId: data.industry,
+        numOfEmpslug: data.numOfEmps,
+      });
+
+      onSuccess && (await onSuccess());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useImperativeHandle(ref, () => ({
     submit: async () => {
-      await handleSubmit(onSubmit)();
+      if (isLastStep) {
+        await handleSubmit(onSubmit)();
+      } else next();
     },
   }));
 
-  return (
-    <div>
-      <form className="p-4">
-        {getFormFields({
-          errors,
-          register,
-          form: [
-            {
-              key: "company-details",
-              title: "Company Details",
-              fields: [
-                {
-                  label: "Name",
-                  name: "name",
-                  type: "text",
-                  colSpan: "full",
-                },
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-                { label: "Website", name: "website", type: "text" },
-                {
-                  label: "Name",
-                  name: "nasmsase",
-                  type: "select",
-                  options: [{ value: "hello", label: "Hello" }],
-                },
-              ],
-            },
-          ],
-        })}
-      </form>
-    </div>
+  return (
+    <form className="p-6">
+      {formFields}
+
+      <Button
+        onClick={() => {
+          next();
+          trigger("name");
+        }}
+      >
+        Next
+      </Button>
+      <Button onClick={back}>Back</Button>
+    </form>
   );
 });

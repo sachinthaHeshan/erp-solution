@@ -1,5 +1,5 @@
 import { XCircleIcon } from "@heroicons/react/20/solid";
-import { Children, ReactNode, useEffect, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 
 interface DrawerProps {
   isOpen: boolean;
@@ -23,6 +23,7 @@ export const Drawer = ({
   title,
 }: DrawerProps) => {
   const [isInitiated, setIsInitiated] = useState(false);
+  // const [context, setContext] = useState(false);
 
   useEffect(() => {
     if (persist && isOpen) {
@@ -56,12 +57,12 @@ export const Drawer = ({
       >
         <div>
           <div className="flex  justify-between items-center border-b border-black p-6 text-base font-semibold">
-            <h1>{title}</h1>
+            <h1 className="text-xl">{title}</h1>
             <XCircleIcon
               onClick={() => {
                 onClose && onClose();
               }}
-              className="h-7 w-7 text-brown-700 hover:text-brown-600"
+              className="h-9 w-9 text-brown-700 hover:text-brown-600"
               aria-hidden="true"
             />
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { trpc } from "@/utils/trpc";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Home() {
   const users = trpc.user.list.useQuery();

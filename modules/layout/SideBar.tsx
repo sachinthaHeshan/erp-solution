@@ -1,9 +1,11 @@
 "use client";
 
 import { sideMenuTabs } from "@/config";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserMiniProfileMenu } from "../shared/components/UserMiniProfileMenu";
 
 export const SideBar = () => {
   const activeTab = usePathname()?.split("/")?.[1];
@@ -14,7 +16,7 @@ export const SideBar = () => {
       className="fixed top-0 left-0 z-40 w-64 h-screen border-r bg-khaki-50 border-black "
       aria-label="Sidebar"
     >
-      <div className="h-full overflow-y-auto">
+      <div className="h-full">
         <Image
           className="m-auto pt-8 pb-14"
           src={"/logo.png"}
@@ -63,6 +65,8 @@ export const SideBar = () => {
             );
           })}
         </ul>
+
+        <UserMiniProfileMenu />
       </div>
     </aside>
   );
